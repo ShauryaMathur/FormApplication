@@ -1,110 +1,82 @@
 import axios from 'axios';
-import {AUTH_ERROR,LOGIN_SUCCESS,LOGIN_FAIL,LOGOUT_SUCCESS,REGISTER_SUCCESS,REGISTER_FAIL, USER_LOADING, USER_LOADED} from './types';
-import {returnErrors} from './erroractions';
+import {
+    LOGIN_SUCCESS,
+    LOGOUT_SUCCESS,
+    REGISTER_SUCCESS,
+    USER_LOADING,
+    USER_LOADED
+} from './types';
 
+// Check token and load user
+export const loadUser = () => (dispatch, getState) => { // User Loading
+    dispatch({type: USER_LOADING});
 
-//Check token and load user
-export const loadUser =() =>(dispatch,getState)=>{
-    //User Loading
-    dispatch({
-        type:USER_LOADING
+    axios.get('/api/auth/user', tokenConfig(getState)).then(res => dispatch({type: USER_LOADED, payload: res.data})).catch(err => {
+        console.log(err);
     });
-
-   
-    axios.get('/api/auth/user',tokenConfig(getState))
-        .then(res=>dispatch({
-            type:USER_LOADED,
-            payload:res.data
-        }))
-        .catch(err=>{
-            dispatch(returnErrors(err.response.data,err.response.status));
-            dispatch({
-                type:AUTH_ERROR
-            });
-        });
 };
 
-//Register User
-export const register=({name,email,password,department})=>dispatch=>{
-    //Header
-    const config={
-        headers:{
-            'Content-type':'application/json'
+// Register User
+export const register = ({name, email, password, department}) => dispatch => { // Header
+    const config = {
+        headers: {
+            'Content-type': 'application/json'
         }
     }
 
-    //Request Body
-    const body=JSON.stringify({name,email,password,department});
+    // Request Body
+    const body = JSON.stringify({name, email, password, department});
 
 
-    axios.post('/api/users',body,config)
-            .then(res=>dispatch({
-                type:REGISTER_SUCCESS,
-                payload:res.data
-            }))
-            .catch(err=>{
-                dispatch(returnErrors(err.response.data,err.response.status,'REGISTER_FAIL'));
-                dispatch({
-                    type:REGISTER_FAIL
-                });
-            });
+    axios.post('/api/users', body, config).then(res => dispatch({type: REGISTER_SUCCESS, payload: res.data})).catch(err => {
+        console.log(err);
+
+    });
 };
 
 
+// Setup config/header and token
+export const tokenConfig = getState => { // Get Token from LocalStorage
 
-//Setup config/header and token
-export const tokenConfig=getState=>{
-     //Get Token from LocalStorage
+    const token = getState().auth.token;
 
-     const token = getState().auth.token;
+    // Headers
 
-     //Headers
- 
-     const config={
-         headers:{
-             "Content-type":"application/json"
-         }
-         
-     }
- 
-     //If token,add to headers
-     if(token){
-         config.headers['x-auth-token']=token;
-     }
+    const config = {
+        headers: {
+            "Content-type": "application/json"
+        }
 
-     return config;
+    }
+
+    // If token,add to headers
+    if (token) {
+        config.headers['x-auth-token'] = token;
+    }
+
+    return config;
 };
 
-//Login User
+// Login User
 
-export const login=({email,password})=>dispatch=>{
-    //Header
-    const config={
-        headers:{
-            'Content-type':'application/json'
+export const login = ({email, password}) => dispatch => { // Header
+    const config = {
+        headers: {
+            'Content-type': 'application/json'
         }
     }
 
-    //Request Body
-    const body=JSON.stringify({email,password});
+    // Request Body
+    const body = JSON.stringify({email, password});
 
-    axios.post('/api/auth',body,config)
-            .then(res=>dispatch({
-                type:LOGIN_SUCCESS,
-                payload:res.data
-            }))
-            .catch(err=>{
-                dispatch(returnErrors(err.response.data,err.response.status,'LOGIN_FAIL'));
-                dispatch({
-                    type:LOGIN_FAIL
-                });
-            });
+    axios.post('/api/auth', body, config).then(res => dispatch({type: LOGIN_SUCCESS, payload: res.data})).catch(err => {
+        console.log(err);
+
+    });
 };
 
 
-//Logout User
-export const logout=()=>{
-    return{
-        type:LOGOUT_SUCCESS
-    };
+// Logout User
+export const logout = () => {
+    return {type: LOGOUT_SUCCESS};
 };

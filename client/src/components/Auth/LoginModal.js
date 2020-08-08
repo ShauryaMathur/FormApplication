@@ -3,7 +3,6 @@ import {Alert,NavLink,Button,Modal,ModalHeader,ModalBody,Form,FormGroup,Label,In
 import {connect} from 'react-redux';
 import PropTypes from 'prop-types';
 import  {login} from '../../actions/authactions';
-import {clearErrors} from '../../actions/erroractions';
 
 class LoginModal extends Component{
     state={
@@ -16,8 +15,7 @@ class LoginModal extends Component{
     static propTypes={
         isAuthenticated:PropTypes.bool,
         error:PropTypes.object.isRequired,
-        login:PropTypes.func.isRequired,
-        clearErrors:PropTypes.func.isRequired
+        login:PropTypes.func.isRequired
     };
 
     componentDidUpdate(prevProps){
@@ -43,7 +41,6 @@ class LoginModal extends Component{
 
     toggle=()=>{
         //Clear Errors
-        this.props.clearErrors();
         this.setState({
             modal:!this.state.modal
         });
@@ -95,4 +92,4 @@ const mapStateToProps=state=>({
     isAuthenticated:state.auth.isAuthenticated,
     error:state.error
 });
-export default connect(mapStateToProps,{login,clearErrors})(LoginModal);
+export default connect(mapStateToProps,{login})(LoginModal);

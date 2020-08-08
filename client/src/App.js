@@ -6,8 +6,6 @@ import AppNavbar from './components/navbar';
 import './App.css';
 import {Provider} from 'react-redux';
 import store from './store';
-import ShoppingList from './components/ShoppingList'
-import ItemModal from './components/ItemModal';
 import {Container} from 'reactstrap';
 import {loadUser} from './actions/authactions';
 import PendingForms from './components/PendingForms';
@@ -26,10 +24,7 @@ class App extends Component {
             <Provider store={store}>
                 <div className="App">
                     <AppNavbar/>
-
                     <Container>
-
-
                         <Route exact path="/"
                             component={DepartmentForm}/>
                         <Route path="/pendingForms"
@@ -38,17 +33,11 @@ class App extends Component {
                             component={RequestedForms}/>
                         <Route path="/approvedForms"
                             component={ApprovedForms}/>
-
                         <Route path="/rejectedForms"
                             component={RejectedForms}/>
-
-
                     </Container>
                 </div>
-
-
             </Provider>
-
         </Router>);
     }
 }

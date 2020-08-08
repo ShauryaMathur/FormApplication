@@ -1,7 +1,5 @@
-import {ITEMS_LOADING, GET_ITEMS, ADD_ITEM, DELETE_ITEM} from './types';
-import axios from 'axios';
-import {tokenConfig} from './authactions';
-import {returnErrors} from './erroractions';
+import {ADD_ITEM} from './types';
+
 
 export const getDepartmentPendingFormsSocket = (socket, data) => dispatch => {
 
@@ -14,10 +12,6 @@ export const getRequestedFormsSocket = (socket, data) => dispatch => {
 }
 
 
-export const deleteItem = id => (dispatch, getState) => {
-    axios.delete(`/api/items/${id}`, tokenConfig(getState)).then(res => dispatch({type: DELETE_ITEM, payload: id})).catch(err => dispatch(returnErrors(err.response.data, err.response.status)));;
-};
-
 export const addFormSocket = (socket, form) => (dispatch, getState) => {
 
     socket.emit('addForm', form)
@@ -27,10 +21,6 @@ export const FormAdded = (data) => (dispatch) => {
     dispatch({type: ADD_ITEM, payload: data})
 
 }
-
-export const setItemsLoading = () => {
-    return {type: ITEMS_LOADING};
-};
 
 export const approveForm = (socket, id) => (dispatch) => {
     socket.emit('approveForm', id);

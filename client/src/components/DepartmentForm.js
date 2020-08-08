@@ -19,8 +19,6 @@ import {connect} from 'react-redux';
 import PropTypes from 'prop-types';
 import {register} from '../actions/authactions';
 import {addFormSocket, FormAdded} from '../actions/formactions';
-
-import {clearErrors} from '../actions/erroractions';
 import io from 'socket.io-client';
 
 class DepartmentForm extends Component {
@@ -64,15 +62,12 @@ class DepartmentForm extends Component {
     static propTypes = {
         isAuthenticated: PropTypes.bool,
         error: PropTypes.object.isRequired,
-        register: PropTypes.func.isRequired,
-        clearErrors: PropTypes.func.isRequired
+        register: PropTypes.func.isRequired
     };
 
     componentDidMount(prevProps) {
         this.state.socket.on('formAdded', (res) => {
             this.props.FormAdded(res);
-            console.log('Form Added');
-
         })
 
     }
@@ -86,13 +81,6 @@ class DepartmentForm extends Component {
                 this.setState({msg: null});
             }
         }
-
-        // If Authenticated close Modal
-        //    if(this.state.modal){
-        //        if(isAuthenticated){
-        //            this.toggle();
-        //        }
-        //    }
     }
 
 
@@ -227,5 +215,5 @@ class DepartmentForm extends Component {
 }
 
 const mapStateToProps = state => ({department: state.auth.department, isAuthenticated: state.auth.isAuthenticated, error: state.error});
-export default connect(mapStateToProps, {register, clearErrors, addFormSocket, FormAdded})(DepartmentForm);
+export default connect(mapStateToProps, {register, addFormSocket, FormAdded})(DepartmentForm);
 
