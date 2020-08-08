@@ -1,0 +1,4 @@
+{
+    "mongoURI":"mongodb+srv://shauryamathur2001:t1GYmOoQNXgmNEPC@mycluster-ai1xz.mongodb.net/SwitchOn?retryWrites=true&w=majority",
+    "jwtSecret":"sl_myJwtSecret"
+}
