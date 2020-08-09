@@ -9,7 +9,7 @@ const initialState={
     isLoading:false,
     user:null,
     email:localStorage.getItem('email'),
-    socket:io.connect("http://localhost:5000")
+    socket:io.connect()
 };
 
 export default function(state=initialState,action){
