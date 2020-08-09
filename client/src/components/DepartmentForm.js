@@ -14,7 +14,6 @@ import {connect} from 'react-redux';
 import PropTypes from 'prop-types';
 import {register, getAllUsersSocket, getAllDepartmentsSocket} from '../actions/authactions';
 import {addFormSocket} from '../actions/formactions';
-import io from 'socket.io-client';
 
 class DepartmentForm extends Component {
 
@@ -26,8 +25,7 @@ class DepartmentForm extends Component {
         dropdownOpen: false,
         departmentUsersDropdownOpen: false,
         availableDepartments: [],
-        users: [],
-        socket:io.connect("http://localhost:5000")
+        users: []
     };
 
     static propTypes = {
@@ -37,19 +35,19 @@ class DepartmentForm extends Component {
 
     componentDidMount(prevProps) {
 
-        this.props.getAllDepartmentsSocket(this.state.socket)
+        this.props.getAllDepartmentsSocket(this.props.socket)
 
-        this.props.getAllUsersSocket(this.state.socket);
+        this.props.getAllUsersSocket(this.props.socket);
 
-        this.state.socket.on('allUsersFetched', (res) => {
+        this.props.socket.on('allUsersFetched', (res) => {
             this.setState({users: res});
 
         })
-        this.state.socket.on('formAdded', (res) => {
+        this.props.socket.on('formAdded', (res) => {
             console.log('Done');
         })
 
-        this.state.socket.on('allDepartmentsFetched', (departments) => {
+        this.props.socket.on('allDepartmentsFetched', (departments) => {
             this.setState({availableDepartments: departments})
 
         })
@@ -58,9 +56,9 @@ class DepartmentForm extends Component {
     componentDidUpdate(prevProps, prevState) {
 
         if (prevState !== this.state) {
-            this.props.getAllDepartmentsSocket(this.state.socket)
+            this.props.getAllDepartmentsSocket(this.props.socket)
 
-            this.props.getAllUsersSocket(this.state.socket);
+            this.props.getAllUsersSocket(this.props.socket);
 
         }
 
@@ -105,7 +103,7 @@ class DepartmentForm extends Component {
         };
 
         // Attempt to register
-        this.props.addFormSocket(this.state.socket, newFormRequest);
+        this.props.addFormSocket(this.props.socket, newFormRequest);
         this.setState({createdBy: '', departmentName: '', targetUser: '', message: ''})
 
     }
@@ -205,7 +203,7 @@ class DepartmentForm extends Component {
 
 }
 
-const mapStateToProps = state => ({department: state.auth.department, isAuthenticated: state.auth.isAuthenticated});
+const mapStateToProps = state => ({socket:state.auth.socket,department: state.auth.department, isAuthenticated: state.auth.isAuthenticated});
 export default connect(mapStateToProps, {
     register,
     addFormSocket,

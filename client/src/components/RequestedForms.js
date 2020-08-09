@@ -3,14 +3,12 @@ import {Table,Button} from 'reactstrap';
 import {connect} from 'react-redux';
 import {getRequestedFormsSocket, approveForm, rejectForm} from '../actions/formactions';
 import PropTypes from 'prop-types';
-import io from 'socket.io-client';
 
 class RequestedForms extends Component {
 
 
     state = {
-        requestedForms: [],
-        socket:io.connect("http://localhost:5000")
+        requestedForms: []
     }
 
     static propTypes = {
@@ -26,28 +24,28 @@ class RequestedForms extends Component {
             department: this.props.department,
             targetUser: this.props.email
         }
-        this.props.getRequestedFormsSocket(this.state.socket, newObj);
+        this.props.getRequestedFormsSocket(this.props.socket, newObj);
 
-        this.state.socket.on('requestedFormsFetched', (data) => {
+        this.props.socket.on('requestedFormsFetched', (data) => {
             this.setState({requestedForms: data})
         })
 
-        this.state.socket.on('formApproved', (form) => {
-            this.props.getRequestedFormsSocket(this.state.socket, newObj);
+        this.props.socket.on('formApproved', (form) => {
+            this.props.getRequestedFormsSocket(this.props.socket, newObj);
         })
 
-        this.state.socket.on('formRejected', (form) => {
-            this.props.getRequestedFormsSocket(this.state.socket, newObj);
+        this.props.socket.on('formRejected', (form) => {
+            this.props.getRequestedFormsSocket(this.props.socket, newObj);
         })
 
     };
 
     onApprove = (id) => {
-        this.props.approveForm(this.state.socket, id);
+        this.props.approveForm(this.props.socket, id);
     };
 
     onReject = (id) => {
-        this.props.rejectForm(this.state.socket, id);
+        this.props.rejectForm(this.props.socket, id);
     };
 
 
@@ -95,6 +93,6 @@ class RequestedForms extends Component {
     }
 }
 
-const mapStateToProps = state => ({email: state.auth.email, department: state.auth.department, isAuthenticated: state.auth.isAuthenticated});
+const mapStateToProps = state => ({socket:state.auth.socket,email: state.auth.email, department: state.auth.department, isAuthenticated: state.auth.isAuthenticated});
 
 export default connect(mapStateToProps, {getRequestedFormsSocket, approveForm, rejectForm})(RequestedForms);

@@ -3,13 +3,11 @@ import {Table,} from 'reactstrap';
 import {connect} from 'react-redux';
 import {getRejectedFormsSocket} from '../actions/formactions';
 import PropTypes from 'prop-types';
-import io from 'socket.io-client';
 
 class RejectedForms extends Component {
 
     state = {
-        rejectedForms: [],
-        socket:io.connect("http://localhost:5000")
+        rejectedForms: []
     }
 
     static propTypes = {
@@ -24,9 +22,9 @@ class RejectedForms extends Component {
             targetUser: this.props.email
         }
 
-        this.props.getRejectedFormsSocket(this.state.socket, newObj);
+        this.props.getRejectedFormsSocket(this.props.socket, newObj);
 
-        this.state.socket.on('rejectedFormsFetched', (data) => {
+        this.props.socket.on('rejectedFormsFetched', (data) => {
             this.setState({rejectedForms: data})
         })
     };
@@ -55,5 +53,5 @@ render() {
         <td>{status}</td>
     </tr>)
 )}</tbody></Table > </React.Fragment>)}}
-const mapStateToProps = state => ({email: state.auth.email, department: state.auth.department, item: state.item, isAuthenticated: state.auth.isAuthenticated});
+const mapStateToProps = state => ({socket:state.auth.socket,email: state.auth.email, department: state.auth.department, item: state.item, isAuthenticated: state.auth.isAuthenticated});
 export default connect(mapStateToProps, {getRejectedFormsSocket})(RejectedForms);
