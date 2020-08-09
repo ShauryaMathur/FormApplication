@@ -24,12 +24,10 @@ class RequestedForms extends Component {
             department: this.props.department,
             targetUser: this.props.email
         }
-        console.log(newObj)
         this.props.getRequestedFormsSocket(this.props.socket, newObj);
 
         this.props.socket.on('requestedFormsFetched', (data) => {
             this.setState({requestedForms: data})
-            console.log(data)
         })
 
         this.props.socket.on('formApproved', (form) => {
@@ -66,7 +64,7 @@ class RequestedForms extends Component {
                 </thead>
                 <tbody>{
                     this.state.requestedForms.map(({_id,createdBy,departmentName,message,status}, index) => (
-                    <tr>
+                    <tr key={_id}>
                         <td>{index + 1}</td>
                         <td>{createdBy}</td>
                         <td>{departmentName}</td>

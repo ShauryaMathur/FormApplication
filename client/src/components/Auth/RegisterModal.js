@@ -20,7 +20,7 @@ class RegisterModal extends Component{
     };
 
     componentDidUpdate(prevProps){
-       const {error,isAuthenticated}=this.props ;
+       const {isAuthenticated}=this.props ;
 
        //If Authenticated close Modal
        if(this.state.modal){
@@ -31,7 +31,6 @@ class RegisterModal extends Component{
     }
 
     toggle=()=>{
-        //Clear Errors
         this.setState({
             modal:!this.state.modal
         });

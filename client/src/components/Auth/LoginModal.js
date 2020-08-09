@@ -18,18 +18,8 @@ class LoginModal extends Component{
     };
 
     componentDidUpdate(prevProps){
-       const {error,isAuthenticated}=this.props ;
-       if(error!=prevProps.error){
-           //Check for register error
-           if(error.id=='LOGIN_FAIL'){
-               this.setState({msg:error.msg.msg});
-           }else{
-               this.setState({
-                   msg:null
-               });
-           }
-       }
-
+       const {isAuthenticated}=this.props ;
+      
        //If Authenticated close Modal
        if(this.state.modal){
            if(isAuthenticated){
@@ -39,7 +29,6 @@ class LoginModal extends Component{
     }
 
     toggle=()=>{
-        //Clear Errors
         this.setState({
             modal:!this.state.modal
         });

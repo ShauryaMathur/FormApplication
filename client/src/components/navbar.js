@@ -1,21 +1,14 @@
 import React, {Component, Fragment} from 'react';
-import {BrowserRouter as Router, Route, Link} from 'react-router-dom'
 import {
     Collapse,
     Navbar,
     NavbarToggler,
-    NavbarBrand,
     Nav,
     NavItem,
     NavLink,
     Container
 } from 'reactstrap';
 import Logout from './Auth/Logout';
-import DepartmentForm from './DepartmentForm';
-// import PendingForms from './PendingForms';
-// import ApprovedForms from './ApprovedForms';
-// import RequestedForms from './RequestedForms';
-// import RejetedForms from './RejectedForms';
 import PropTypes from 'prop-types';
 import RegisterModal from './Auth/RegisterModal';
 import LoginModal from './Auth/LoginModal';
