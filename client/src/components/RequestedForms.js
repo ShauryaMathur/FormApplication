@@ -50,7 +50,10 @@ class RequestedForms extends Component {
 
 
     render() {
-        return (<React.Fragment>
+
+        const {isAuthenticated} = this.props;
+
+        const requestedFormsList = (
             <Table>
                 <thead>
                     <tr>
@@ -87,6 +90,9 @@ class RequestedForms extends Component {
                     </tr>))
                 }</tbody>
             </Table>
+        )
+        return (<React.Fragment>
+            {isAuthenticated?requestedFormsList:<p>Please Login To Continue</p>}
         </React.Fragment>
 
         );

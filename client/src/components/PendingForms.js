@@ -28,7 +28,6 @@ class PendingForms extends Component {
 
     componentDidMount() {
         const {department} = this.props;
-        console.log(department)
         const newObj = {
             departmentName: department
         }
@@ -39,12 +38,11 @@ class PendingForms extends Component {
 
     };
 
-    onDelete = (id) => {
-        this.props.deleteItem(id);
-    };
-
     render() {
-        return (<React.Fragment>
+
+        const {isAuthenticated} = this.props;
+
+        const pendingFormsList = (
             <Table>
                 <thead>
                     <tr>
@@ -70,13 +68,17 @@ class PendingForms extends Component {
                     </tr>))
                 }</tbody>
             </Table>
+        )
+
+        return (<React.Fragment>
+            {isAuthenticated?pendingFormsList:<p>Please Login To Continue</p>}
         </React.Fragment>
 
         );
     }
 }
 
-const mapStateToProps = state => ({socket:state.auth.socket,department: state.auth.department, item: state.item, isAuthenticated: state.auth.isAuthenticated});
+const mapStateToProps = state => ({socket:state.auth.socket,department: state.auth.department, isAuthenticated: state.auth.isAuthenticated});
 
 
 export default connect(mapStateToProps, {getDepartmentPendingFormsSocket})(PendingForms);

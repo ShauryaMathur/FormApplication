@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Table,} from 'reactstrap';
+import {Table} from 'reactstrap';
 import {connect} from 'react-redux';
 import {getRejectedFormsSocket} from '../actions/formactions';
 import PropTypes from 'prop-types';
@@ -11,7 +11,7 @@ class RejectedForms extends Component {
     }
 
     static propTypes = {
-        getRejectedFormsSocket : PropTypes.func.isRequired,
+        getRejectedFormsSocket: PropTypes.func.isRequired,
         isAuthenticated: PropTypes.bool
     };
 
@@ -29,10 +29,11 @@ class RejectedForms extends Component {
         })
     };
 
-render() {
-    return(
-    <React.Fragment> 
-        <Table> 
+    render() {
+
+        const {isAuthenticated} = this.props;
+
+        const rejectedFormsList = (<Table>
             <thead>
                 <tr>
                     <th>#</th>
@@ -42,16 +43,35 @@ render() {
                     <th>Status</th>
                 </tr>
             </thead>
-            <tbody>{
-        this.state.rejectedForms.map(
-    ({_id,createdBy,departmentName,message,status}, index) => (
-    <tr key={_id}>
-        <td>{index + 1}</td>
-        <td>{createdBy}</td>
-        <td>{departmentName}</td>
-        <td>{message}</td>
-        <td>{status}</td>
-    </tr>)
-)}</tbody></Table > </React.Fragment>)}}
-const mapStateToProps = state => ({socket:state.auth.socket,email: state.auth.email, department: state.auth.department, item: state.item, isAuthenticated: state.auth.isAuthenticated});
+            <tbody> {
+                this.state.rejectedForms.map(({
+                    _id,
+                    createdBy,
+                    departmentName,
+                    message,
+                    status
+                }, index) => (<tr key={_id}>
+                    <td> {
+                        index + 1
+                    }</td>
+                    <td> {createdBy}</td>
+                    <td> {departmentName}</td>
+                    <td> {message}</td>
+                    <td> {status}</td>
+                </tr>))
+            }</tbody>
+        </Table>)
+
+        return (<React.Fragment>
+            {isAuthenticated?rejectedFormsList:<p>Please Login To Continue</p>}
+        </React.Fragment>)
+    }
+}
+const mapStateToProps = state => ({
+    socket: state.auth.socket,
+    email: state.auth.email,
+    department: state.auth.department,
+    item: state.item,
+    isAuthenticated: state.auth.isAuthenticated
+});
 export default connect(mapStateToProps, {getRejectedFormsSocket})(RejectedForms);
