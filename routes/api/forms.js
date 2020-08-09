@@ -1,5 +1,4 @@
 const express = require('express');
-const auth = require('../../Middleware/auth');
 const router = express.Router();
 
 // Form Model
@@ -14,24 +13,8 @@ router.get('/', (req, res) => {
     Form.find().sort({date: -1}).then(items => res.json(items)).catch(console.error);
 });
 
-// @route POST api/forms
-// @desc  Create A Form
-// @acess Private
-router.post('/', auth, (req, res) => {
-
-    const newForm = new Form({
-        createdBy: req.body.createdBy,
-        departmentName: req.body.departmentName,
-        targetUser: req.body.targetUser,
-        message: req.body.message,
-        status: 'Assigned'
-    });
-
-    newForm.save().then(form => res.json(form)).catch(err => console.log(err));
-});
 
 const addForm = (req) => {
-    var targetUserEmail = '';
     User.findOne({name: req.targetUser, department: req.departmentName}).then(user => {
 
         const newForm = new Form({
@@ -104,13 +87,19 @@ const rejectForm = (socket, id) => {
 
 }
 
-// @route DELETE api/forms/:id
-// @desc  Delete A Form
-// @acess Private
-router.delete('/:id', auth, (req, res) => {
 
-    Item.findById(req.params.id).then(item => item.remove().then(() => res.json({success: true}))).catch(err => res.status(404).json({success: false}));
-});
+const getAllUsers = (socket) => {
+    User.find().then(users => {
+        socket.emit('allUsersFetched', users);
+    })
+}
+
+const getAllDepartments = (socket) =>{
+    User.find().distinct("department").then(departments=>{
+        socket.emit('allDepartmentsFetched',departments)
+    })
+}
+
 
 
 module.exports = {
@@ -120,6 +109,8 @@ module.exports = {
     approveForm: approveForm,
     rejectForm: rejectForm,
     getApprovedFormsSocket:getApprovedFormsSocket,
-    getRejectedFormsSocket:getRejectedFormsSocket
+    getRejectedFormsSocket:getRejectedFormsSocket,
+    getAllUsers : getAllUsers,
+    getAllDepartments : getAllDepartments
 
 }

@@ -12,8 +12,10 @@ const {
     approveForm,
     rejectForm,
     getApprovedFormsSocket,
-    getRejectedFormsSocket
+getRejectedFormsSocket,
+getAllUsers,getAllDepartments
 } = require('./routes/api/forms');
+
 
 
 const app = express();
@@ -95,6 +97,16 @@ try {
             getRejectedFormsSocket(socket, data)
 
         })
+
+        socket.on('getAllUsers',function(data){
+            getAllUsers(socket)
+        })
+
+        socket.on('getAllDepartmentsSocket',function(data){
+            getAllDepartments(socket)
+        })
+
+
 
         connections.push(socket);
     })

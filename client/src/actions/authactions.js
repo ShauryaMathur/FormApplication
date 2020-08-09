@@ -80,3 +80,14 @@ export const login = ({email, password}) => dispatch => { // Header
 export const logout = () => {
     return {type: LOGOUT_SUCCESS};
 };
+
+export const getAllUsersSocket = (socket) => ()=>{
+    socket.emit('getAllUsers')
+}
+
+export const getAllDepartmentsSocket = (socket) => () => {
+
+    socket.emit('getAllDepartmentsSocket')
+
+}
+

@@ -17,7 +17,7 @@ import {
 } from 'reactstrap';
 import {connect} from 'react-redux';
 import PropTypes from 'prop-types';
-import {register} from '../actions/authactions';
+import {register, getAllUsersSocket,getAllDepartmentsSocket} from '../actions/authactions';
 import {addFormSocket, FormAdded} from '../actions/formactions';
 import io from 'socket.io-client';
 
@@ -31,58 +31,45 @@ class DepartmentForm extends Component {
         message: '',
         dropdownOpen: false,
         departmentUsersDropdownOpen: false,
-        availableDepartments: [
-            {
-                _id: 1,
-                value: 'D1',
-                label: 'Department1'
-            }, {
-                _id: 2,
-                value: 'D2',
-                label: 'Department2'
-            }, {
-                _id: 3,
-                value: 'EG-DEV',
-                label: 'Department3'
-            }
-        ],
-        users: [
-            {
-                _id: 1,
-                name: 'Shaurya',
-                department: 'D1'
-            }, {
-                _id: 2,
-                name: 'Karan',
-                department: 'D2'
-            }
-        ]
+        availableDepartments: [],
+        users: []
     };
 
     static propTypes = {
         isAuthenticated: PropTypes.bool,
-        error: PropTypes.object.isRequired,
         register: PropTypes.func.isRequired
     };
 
     componentDidMount(prevProps) {
+
+        this.props.getAllDepartmentsSocket(this.state.socket)
+
+        this.props.getAllUsersSocket(this.state.socket);
+
+        this.state.socket.on('allUsersFetched',(res)=>{
+            this.setState({users:res})
+        })
         this.state.socket.on('formAdded', (res) => {
             this.props.FormAdded(res);
         })
 
+        this.state.socket.on('allDepartmentsFetched',(departments)=>{
+            this.setState({availableDepartments: departments})
+
+        })
     }
 
-    componentDidUpdate(prevProps) {
-        const {error, isAuthenticated, department} = this.props;
-        if (error != prevProps.error) { // Check for register error
-            if (error.id == 'REGISTER_FAIL') {
-                this.setState({msg: error.msg.msg});
-            } else {
-                this.setState({msg: null});
-            }
+    componentDidUpdate(prevProps,prevState){
+
+        if(prevState !== this.state){
+            this.props.getAllDepartmentsSocket(this.state.socket)
+
+            this.props.getAllUsersSocket(this.state.socket);
+
         }
-    }
+        
 
+    }
 
     toggleDepartmentDropdown = () => {
         this.setState({
@@ -123,7 +110,6 @@ class DepartmentForm extends Component {
         };
 
         // Attempt to register
-        // this.props.register(newUser);
         this.props.addFormSocket(this.state.socket, newFormRequest);
         this.setState({createdBy :'', departmentName:'',targetUser:'', message:''})
 
@@ -160,14 +146,14 @@ class DepartmentForm extends Component {
                         <DropdownMenu>
                             <DropdownItem header>Departments</DropdownItem>
                             {
-                            this.state.availableDepartments.map(({_id, value, label}) => (<DropdownItem key={_id}
+                            this.state.availableDepartments.map((value) => (<DropdownItem key={value}
                                 disabled={
                                     value === this.props.department
                                 }
                                 value={value}
                                 onClick={
                                     this.handleDepartmentSelect
-                            }> {label}</DropdownItem>))
+                            }> {value}</DropdownItem>))
                         } </DropdownMenu>
                     </Dropdown>
 
@@ -214,6 +200,11 @@ class DepartmentForm extends Component {
 
 }
 
-const mapStateToProps = state => ({department: state.auth.department, isAuthenticated: state.auth.isAuthenticated, error: state.error});
-export default connect(mapStateToProps, {register, addFormSocket, FormAdded})(DepartmentForm);
+const mapStateToProps = state => ({department: state.auth.department, isAuthenticated: state.auth.isAuthenticated});
+export default connect(mapStateToProps, {
+    register,
+    addFormSocket,
+    FormAdded,
+    getAllUsersSocket,getAllDepartmentsSocket})(DepartmentForm);
+
 

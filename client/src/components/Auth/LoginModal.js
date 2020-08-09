@@ -14,7 +14,6 @@ class LoginModal extends Component{
 
     static propTypes={
         isAuthenticated:PropTypes.bool,
-        error:PropTypes.object.isRequired,
         login:PropTypes.func.isRequired
     };
 
@@ -89,7 +88,6 @@ class LoginModal extends Component{
 }
 
 const mapStateToProps=state=>({
-    isAuthenticated:state.auth.isAuthenticated,
-    error:state.error
+    isAuthenticated:state.auth.isAuthenticated
 });
 export default connect(mapStateToProps,{login})(LoginModal);
