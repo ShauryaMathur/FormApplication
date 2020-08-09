@@ -3,11 +3,13 @@ import {Table} from 'reactstrap';
 import {connect} from 'react-redux';
 import {getDepartmentPendingFormsSocket} from '../actions/formactions';
 import PropTypes from 'prop-types';
+import io from 'socket.io-client';
 
 class PendingForms extends Component {
 
     state = {
-        departmentPendingForms: []
+        departmentPendingForms: [],
+        socket:io.connect("http://localhost:5000")
     }
 
     static propTypes = {
@@ -22,7 +24,7 @@ class PendingForms extends Component {
             departmentName: department
         }
         if (prevProps.department !== this.props.department) {
-            this.props.getDepartmentPendingFormsSocket(this.props.socket, newObj);
+            this.props.getDepartmentPendingFormsSocket(this.state.socket, newObj);
         }
     }
 
@@ -32,8 +34,8 @@ class PendingForms extends Component {
         const newObj = {
             departmentName: department
         }
-        this.props.getDepartmentPendingFormsSocket(this.props.socket, newObj);
-        this.props.socket.on('departmentFormsFetched', (forms) => {
+        this.props.getDepartmentPendingFormsSocket(this.state.socket, newObj);
+        this.state.socket.on('departmentFormsFetched', (forms) => {
             this.setState({departmentPendingForms: forms})
         })
 
@@ -76,7 +78,7 @@ class PendingForms extends Component {
     }
 }
 
-const mapStateToProps = state => ({socket:state.auth.socket,department: state.auth.department, item: state.item, isAuthenticated: state.auth.isAuthenticated});
+const mapStateToProps = state => ({department: state.auth.department, item: state.item, isAuthenticated: state.auth.isAuthenticated});
 
 
 export default connect(mapStateToProps, {getDepartmentPendingFormsSocket})(PendingForms);

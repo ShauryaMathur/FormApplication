@@ -3,13 +3,14 @@ import {Table} from 'reactstrap';
 import {connect} from 'react-redux';
 import {getApprovedFormsSocket} from '../actions/formactions';
 import PropTypes from 'prop-types';
+import io from 'socket.io-client';
 
 class ApprovedForms extends Component {
 
 
     state = {
-        approvedForms :[]
-
+        approvedForms :[],
+        socket:io.connect("http://localhost:5000")
     }
 
     static propTypes = {
@@ -23,9 +24,9 @@ class ApprovedForms extends Component {
             targetUser: this.props.email
         }
 
-        this.props.getApprovedFormsSocket(this.props.socket,newObj);
+        this.props.getApprovedFormsSocket(this.state.socket,newObj);
 
-        this.props.socket.on('approvedFormsFetched',(data)=>{
+        this.state.socket.on('approvedFormsFetched',(data)=>{
             this.setState({approvedForms:data})
         })
     };
@@ -62,7 +63,7 @@ class ApprovedForms extends Component {
         </React.Fragment>)}}
 
 
-const mapStateToProps = state => ({socket:state.auth.socket,email: state.auth.email,department: state.auth.department,item: state.item,isAuthenticated: state.auth.isAuthenticated});
+const mapStateToProps = state => ({email: state.auth.email,department: state.auth.department,item: state.item,isAuthenticated: state.auth.isAuthenticated});
 
 
 export default connect(mapStateToProps, {getApprovedFormsSocket})(ApprovedForms);

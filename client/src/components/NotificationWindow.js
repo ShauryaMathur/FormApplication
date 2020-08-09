@@ -1,31 +1,34 @@
 import React, {Component} from 'react';
 import {Alert} from 'reactstrap'
 import {connect} from 'react-redux';
+import io from 'socket.io-client';
+
 
 
 class NotificationWindow extends Component {
 
     state = {
         notification: '',
-        showNotification: false
+        showNotification: false,
+        socket:io.connect("http://localhost:5000")
     }
 
     componentDidMount() {
 
-        this.props.socket.on('formAdded', (res) => {
+        this.state.socket.on('formAdded', (res) => {
             if (res.depatmentName === this.props.department) {
                 this.setState({showNotification: true, notification: 'New Form Added !'})
                 setTimeout(() => this.setState({showNotification: false}), 4000);
             }
 
         })
-        this.props.socket.on('formApproved', (res) => {
+        this.state.socket.on('formApproved', (res) => {
             if (res.depatmentName === this.props.department) {
                 this.setState({showNotification: true, notification: 'Form Approved !'})
                 setTimeout(() => this.setState({showNotification: false}), 4000);
             }
         })
-        this.props.socket.on('formRejected', (res) => {
+        this.state.socket.on('formRejected', (res) => {
             if (res.depatmentName === this.props.department) {
                 this.setState({showNotification: true, notification: 'Form Rejected !'})
                 setTimeout(() => this.setState({showNotification: false}), 4000);
@@ -42,5 +45,5 @@ class NotificationWindow extends Component {
         }</Alert>)
     }
 }
-const mapStateToProps = state => ({socket: state.auth.socket, department: state.auth.department, isAuthenticated: state.auth.isAuthenticated});
+const mapStateToProps = state => ({department: state.auth.department, isAuthenticated: state.auth.isAuthenticated});
 export default connect(mapStateToProps, null)(NotificationWindow);
