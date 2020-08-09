@@ -1,4 +1,6 @@
 import {USER_LOADED,USER_LOADING,AUTH_ERROR,LOGIN_SUCCESS,LOGIN_FAIL,LOGOUT_SUCCESS,REGISTER_SUCCESS,REGISTER_FAIL} from '../actions/types';
+import io from 'socket.io-client';
+
 
 const initialState={
     token:localStorage.getItem('token'),
@@ -6,7 +8,8 @@ const initialState={
     isAuthenticated:null,
     isLoading:false,
     user:null,
-    email:localStorage.getItem('email')
+    email:localStorage.getItem('email'),
+    socket:io.connect("http://localhost:5000")
 };
 
 export default function(state=initialState,action){

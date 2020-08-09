@@ -1,11 +1,6 @@
 import React, {Component} from 'react';
 import {
-    Alert,
-    NavLink,
     Button,
-    Modal,
-    ModalHeader,
-    ModalBody,
     Form,
     FormGroup,
     Label,
@@ -17,14 +12,12 @@ import {
 } from 'reactstrap';
 import {connect} from 'react-redux';
 import PropTypes from 'prop-types';
-import {register, getAllUsersSocket,getAllDepartmentsSocket} from '../actions/authactions';
-import {addFormSocket, FormAdded} from '../actions/formactions';
-import io from 'socket.io-client';
+import {register, getAllUsersSocket, getAllDepartmentsSocket} from '../actions/authactions';
+import {addFormSocket} from '../actions/formactions';
 
 class DepartmentForm extends Component {
 
     state = {
-        socket : io.connect("http://localhost:5000"),
         createdBy: '',
         departmentName: '',
         targetUser: '',
@@ -42,32 +35,32 @@ class DepartmentForm extends Component {
 
     componentDidMount(prevProps) {
 
-        this.props.getAllDepartmentsSocket(this.state.socket)
+        this.props.getAllDepartmentsSocket(this.props.socket)
 
-        this.props.getAllUsersSocket(this.state.socket);
+        this.props.getAllUsersSocket(this.props.socket);
 
-        this.state.socket.on('allUsersFetched',(res)=>{
-            this.setState({users:res})
+        this.props.socket.on('allUsersFetched', (res) => {
+            this.setState({users: res});
+
         })
-        this.state.socket.on('formAdded', (res) => {
-            this.props.FormAdded(res);
+        this.props.socket.on('formAdded', (res) => {
+            console.log('Done');
         })
 
-        this.state.socket.on('allDepartmentsFetched',(departments)=>{
+        this.props.socket.on('allDepartmentsFetched', (departments) => {
             this.setState({availableDepartments: departments})
 
         })
     }
 
-    componentDidUpdate(prevProps,prevState){
+    componentDidUpdate(prevProps, prevState) {
 
-        if(prevState !== this.state){
-            this.props.getAllDepartmentsSocket(this.state.socket)
+        if (prevState !== this.state) {
+            this.props.getAllDepartmentsSocket(this.props.socket)
 
-            this.props.getAllUsersSocket(this.state.socket);
+            this.props.getAllUsersSocket(this.props.socket);
 
         }
-        
 
     }
 
@@ -110,19 +103,23 @@ class DepartmentForm extends Component {
         };
 
         // Attempt to register
-        this.props.addFormSocket(this.state.socket, newFormRequest);
-        this.setState({createdBy :'', departmentName:'',targetUser:'', message:''})
+        this.props.addFormSocket(this.props.socket, newFormRequest);
+        this.setState({createdBy: '', departmentName: '', targetUser: '', message: ''})
 
     }
 
     render() {
-        return (<React.Fragment>
+
+        const form = (
             <Form onSubmit={
                 this.onSubmit
             }>
                 <FormGroup>
                     <Label for="createdBy">Created By</Label>
-                    <Input type="text" name="createdBy" id="createdBy" placeholder="Name" className="mb-3" value={this.state.createdBy}
+                    <Input type="text" name="createdBy" id="createdBy" placeholder="Name" className="mb-3"
+                        value={
+                            this.state.createdBy
+                        }
                         onChange={
                             this.onChange
                         }/>
@@ -183,7 +180,10 @@ class DepartmentForm extends Component {
                     </Dropdown>
 
                     <Label for="message">Message</Label>
-                    <Input type="text" name="message" id="message" placeholder="Message" className="mb-3" value={this.state.message}
+                    <Input type="text" name="message" id="message" placeholder="Message" className="mb-3"
+                        value={
+                            this.state.message
+                        }
                         onChange={
                             this.onChange
                         }/>
@@ -195,16 +195,18 @@ class DepartmentForm extends Component {
                         block>Submit</Button>
                 </FormGroup>
             </Form>
+        )
+        return (<React.Fragment>
+            {this.props.isAuthenticated?form:<p>Please Login To Continue</p>}
         </React.Fragment>);
     }
 
 }
 
-const mapStateToProps = state => ({department: state.auth.department, isAuthenticated: state.auth.isAuthenticated});
+const mapStateToProps = state => ({socket:state.auth.socket,department: state.auth.department, isAuthenticated: state.auth.isAuthenticated});
 export default connect(mapStateToProps, {
     register,
     addFormSocket,
-    FormAdded,
-    getAllUsersSocket,getAllDepartmentsSocket})(DepartmentForm);
-
-
+    getAllUsersSocket,
+    getAllDepartmentsSocket
+})(DepartmentForm);

@@ -23,6 +23,8 @@
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.5.11",
     "nodemon": "^1.19.1",
+    "react-alert": "^7.0.2",
+    "react-alert-template-basic": "^1.0.0",
     "react-redux": "^7.0.3",
     "react-scripts": "3.0.1",
     "react-transition-group": "^4.0.1",

@@ -28,7 +28,6 @@ const addForm = (req) => {
 
         newForm.save().then(form => console.log(form)).catch(err => console.log(err));
 
-
     })
 
 
@@ -71,22 +70,21 @@ const getRejectedFormsSocket = (socket, req) => {
 }
 
 
-const approveForm = (socket, id) => {
+const approveForm = (io,socket, id) => {
     Form.findByIdAndUpdate(id, {status: 'Approved'}).then(form => {
-        socket.emit('formApproved', form)
+        socket.emit('formApproved', form);
+        io.emit('formApproved',form)
     })
 
 }
 
-const rejectForm = (socket, id) => {
+const rejectForm = (io,socket, id) => {
 
     Form.findByIdAndUpdate(id, {status: 'Rejected'}).then(form => {
-        socket.emit('formRejected', form)
+        socket.emit('formRejected', form);
+        io.emit('formRejected',form)
     })
-
-
 }
-
 
 const getAllUsers = (socket) => {
     User.find().then(users => {

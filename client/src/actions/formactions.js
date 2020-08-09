@@ -17,10 +17,6 @@ export const addFormSocket = (socket, form) => (dispatch, getState) => {
     socket.emit('addForm', form)
 };
 
-export const FormAdded = (data) => (dispatch) => {
-    dispatch({type: ADD_ITEM, payload: data})
-
-}
 
 export const approveForm = (socket, id) => (dispatch) => {
     socket.emit('approveForm', id);

@@ -67,9 +67,11 @@ server.listen(port)
 const connections = [];
 try {
     io.on("connection", (socket) => {
+        console.log('Connected :' + socket.id)
         socket.on('addForm', function (data) {
             addForm(data);
-            socket.emit('formAdded', data)
+            socket.emit('formAdded', data);
+            io.emit('formAdded',data)
         })
         socket.on('getDepartmentPendingForms', function (data) {
             getDepartmentPendingForms(socket, data);
@@ -81,11 +83,11 @@ try {
         })
 
         socket.on('approveForm', function (id) {
-            approveForm(socket, id);
+            approveForm(io,socket, id);
         })
 
         socket.on('rejectForm', function (id) {
-            rejectForm(socket, id);
+            rejectForm(io,socket, id);
         })
 
         socket.on('getApprovedFormsSocket', function (data) {
