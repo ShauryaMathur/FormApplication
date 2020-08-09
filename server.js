@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 const config = require('config');
 const path = require('path');
 const cors = require('cors');
-const https = require('https');
+const http = require('http');
 const socketServer = require('socket.io');
 const {
     addForm,
@@ -47,7 +47,7 @@ mongoose.connect(db, {
 app.use('/api/users', require('./routes/api/users'));
 app.use('/api/auth', require('./routes/api/auth'));
 
-const server = https.createServer(app);
+const server = http.createServer(app);
 const io = socketServer.listen(server);
 
 
